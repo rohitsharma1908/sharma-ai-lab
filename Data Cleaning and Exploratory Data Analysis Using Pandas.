@@ -1,0 +1,49 @@
+# Data Cleaning and Exploratory Data Analysis Using Pandas
+
+import os
+import pandas as pd
+
+filename = "students1.csv"
+
+# Create a sample CSV only if students1.csv does not already exist
+if not os.path.exists(filename):
+    sample_data = """Name,Department,Attendance,Mark
+Anitha,CSE,92.0,85.0
+Bala,CSE,88.0,91.0
+Chitra,ECE,,78.0
+Dinesh,CSE,85.0,
+Eshan,CSE,85.0,84.0
+Eshan,CSE,85.0,84.0
+"""
+    with open(filename, "w", encoding="utf-8") as f:
+        f.write(sample_data.strip() + "\n")
+
+# Load the CSV file
+df = pd.read_csv(filename)
+print("--- Original Dataset ---")
+print(df)
+
+print("\nMissing Values:")
+print(df.isnull().sum())
+
+# Fill missing values with column means
+df["Attendance"] = df["Attendance"].fillna(df["Attendance"].mean())
+df["Mark"] = df["Mark"].fillna(df["Mark"].mean())
+
+# Remove duplicate records
+df = df.drop_duplicates()
+
+print("\n--- Cleaned Dataset ---")
+print(df)
+
+print("\n--- Descriptive Statistics ---")
+print(df.describe())
+
+print("\n--- Department-wise Average Marks ---")
+print(df.groupby("Department")["Mark"].mean().round(2))
+
+print("\n--- EDA Summary ---")
+print("Highest Mark       :", df["Mark"].max())
+print("Lowest Mark        :", df["Mark"].min())
+print("Average Mark       :", round(float(df["Mark"].mean()), 2))
+print("Average Attendance :", round(float(df["Attendance"].mean()), 2))
